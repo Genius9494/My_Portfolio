@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { gsap } from "../../lib/gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "@studio-freight/lenis";
-import Image from "next/image";
 import IndependentIconsMarquee from "../../components/progressBar";
 import CurvedLoop from "@/components/CurvedLoop";
 import HeroCarousel from "@/components/ProjectsInteractiveFull";
@@ -18,7 +17,7 @@ import RandomSideSections from "@/components/RandomSideSections";
 export default function PortfolioEnhancedPage() {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const cursorRef = useRef<HTMLDivElement | null>(null);
-    const logoSrc = "/logo.png";
+    // const logoSrc = "/logo.png";
 
     /* ------------------------------ Smooth Scroll ------------------------------ */
     useEffect(() => {

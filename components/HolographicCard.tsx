@@ -36,11 +36,17 @@ export default function NeonFullSection() {
 
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
-    const offsetX = useTransform(mouseX, [0, window.innerWidth], [-20, 20]);
-    const offsetY = useTransform(mouseY, [0, window.innerHeight], [-20, 20]);
+    const [windowSize, setWindowSize] = useState({ w: 1200, h: 800 }); // افتراضي
+
+    const offsetX = useTransform(mouseX, [0, windowSize.w], [-20, 20]);
+    const offsetY = useTransform(mouseY, [0, windowSize.h], [-20, 20]);
 
     useEffect(() => {
         setParticles(generateParticles(80));
+
+        if (typeof window === "undefined") return;
+
+        setWindowSize({ w: window.innerWidth, h: window.innerHeight });
 
         const handleMouse = (e: MouseEvent) => {
             mouseX.set(e.clientX);

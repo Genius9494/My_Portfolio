@@ -46,7 +46,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
     <html lang="ar" dir="rtl" suppressHydrationWarning>
       <body className=' bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors'>
         {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
-        <IntroLoader />
+        {/* <IntroLoader /> */}
         <div
           className={`sticky top-0 z-50 transition-transform duration-300 ease-in-out overflow-hidden
               ${showNav ? "translate-y-0" : "-translate-y-20"}`}

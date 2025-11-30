@@ -4,9 +4,15 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
 
 export default function RandomSideSections() {
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            gsap.registerPlugin(ScrollTrigger);
+        }
+    }, []); 
+    
     const rootRef = useRef<HTMLDivElement>(null);
 
     const sections = [

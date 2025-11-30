@@ -21,24 +21,30 @@ const generateParticles = (count: number) =>
 const Timeline3D = () => {
     const [particles, setParticles] = useState<{ top: number; left: number; size: number; delay: number }[]>([]);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [windowSize, setWindowSize] = useState({ w: 1200, h: 800 });
 
-    // Motion values for mouse parallax
+    // Motion values
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    // Transform for parallax movement (small offsets)
-    const offsetX = useTransform(mouseX, [0, window.innerWidth], [-20, 20]);
-    const offsetY = useTransform(mouseY, [0, window.innerHeight], [-20, 20]);
+    // Parallax transforms
+    const offsetX = useTransform(mouseX, [0, windowSize.w], [-20, 20]);
+    const offsetY = useTransform(mouseY, [0, windowSize.h], [-20, 20]);
 
     useEffect(() => {
+        if (typeof window === "undefined") return;
+
         setParticles(generateParticles(40));
 
         const handleMouse = (e: MouseEvent) => {
             mouseX.set(e.clientX);
             mouseY.set(e.clientY);
         };
-
         window.addEventListener("mousemove", handleMouse);
+
+        // تحديث أبعاد الشاشة بعد mount
+        setWindowSize({ w: window.innerWidth, h: window.innerHeight });
+
         return () => window.removeEventListener("mousemove", handleMouse);
     }, [mouseX, mouseY]);
 

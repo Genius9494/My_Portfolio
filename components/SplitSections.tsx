@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { motion, useMotionValue, useTransform, useScroll } from "framer-motion";
 import Image from "next/image";
 
@@ -38,54 +38,54 @@ const SplitSections: React.FC = () => {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const offsetX = useTransform(mouseX, [0, window.innerWidth], [-15, 15]);
-    const offsetY = useTransform(mouseY, [0, window.innerHeight], [-15, 15]);
+    const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
     useEffect(() => {
-        const handleMouse = (e: MouseEvent) => {
-            mouseX.set(e.clientX);
-            mouseY.set(e.clientY);
-        };
-        window.addEventListener("mousemove", handleMouse);
-        return () => window.removeEventListener("mousemove", handleMouse);
+        if (typeof window !== "undefined") {
+            setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+
+            const handleMouse = (e: MouseEvent) => {
+                mouseX.set(e.clientX);
+                mouseY.set(e.clientY);
+            };
+
+            window.addEventListener("mousemove", handleMouse);
+            return () => window.removeEventListener("mousemove", handleMouse);
+        }
     }, [mouseX, mouseY]);
 
+    // Safe transforms: only create after window size is set
+    const offsetX = useTransform(mouseX, [0, windowSize.width || 1], [-15, 15]);
+    const offsetY = useTransform(mouseY, [0, windowSize.height || 1], [-15, 15]);
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"],
     });
-    
 
-    // map progress to height percent
     const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
-
 
     return (
         <div ref={containerRef} className="w-full text-white relative">
-
             {/* ---- Vertical Neon Line ---- */}
             <motion.div
                 style={{ height: lineHeight }}
                 className="
-          absolute left-1/2 top-0 
-          w-[4px] 
-          bg-cyan-400 
-          rounded-full
-          shadow-[0_0_20px_6px_rgba(0,255,255,0.9)]
-          before:content-['']
-          before:absolute
-          before:inset-0
-          before:w-full
-          before:h-full
-          before:blur-[20px]
-          before:bg-cyan-400
-          before:opacity-90
-        "
+                    absolute left-1/2 top-0 
+                    w-[4px] 
+                    bg-cyan-400 
+                    rounded-full
+                    shadow-[0_0_20px_6px_rgba(0,255,255,0.9)]
+                    before:content-['']
+                    before:absolute
+                    before:inset-0
+                    before:w-full
+                    before:h-full
+                    before:blur-[20px]
+                    before:bg-cyan-400
+                    before:opacity-90
+                "
             />
-
-
 
             {scenes.map((scene, i) => (
                 <section

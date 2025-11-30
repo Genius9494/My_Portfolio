@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, Variants, Easing } from "framer-motion";
+import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 
 interface Particle {
@@ -22,47 +23,85 @@ const generateParticles = (count: number) =>
 const phases = [
     {
         title: "Phase 1: Discovery",
-        text: "We begin by understanding your vision, project goals, and target audience. This is where we map out requirements and build the foundation for your product.",
+        text: "We begin by understanding your vision, project goals, and target audience.",
         bg: "/sec1.png",
     },
     {
         title: "Phase 2: Design (UI/UX)",
-        text: "We transform your ideas into intuitive, beautiful user interfaces. Wireframes, mockups, and polished UI that reflect your identity.",
+        text: "Transforming ideas into intuitive and beautiful user interfaces.",
         bg: "/sec2.png",
     },
     {
         title: "Phase 3: Development",
-        text: "Our developers bring designs to life with clean code, powerful back-end, database integration, and thorough testing to ensure flawless performance.",
+        text: "Bringing designs to life with clean code and powerful backend logic.",
         bg: "/sec3.jpg",
     },
     {
         title: "Phase 4: Launch",
-        text: "After development and testing, we deploy your product to servers or cloud environments—ensuring a smooth launch and optimal performance.",
+        text: "Deploying your product and ensuring a smooth launch.",
         bg: "/sec4.png",
     },
 ];
 
-export default function NeonFullPagePulse() {
-    const [particles, setParticles] = useState<Particle[]>([]);
+// VALID easing for framer-motion
+const cubic: Easing = [0.16, 1, 0.3, 1];
+
+const fadeInSmooth: Variants = {
+    hidden: { opacity: 0, y: 60 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 1.2, ease: cubic },
+    },
+};
+
+const slideInSmooth: Variants = {
+    hidden: { opacity: 0, x: 80 },
+    visible: {
+        opacity: 1,
+        x: 0,
+        transition: { duration: 1.4, ease: cubic },
+    },
+};
+
+export default function NeonFullSection() {
+    const [particles, setParticles] = useState<{ top: number; left: number; size: number; delay: number }[]>([]);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const offsetX = useTransform(mouseX, [0, window.innerWidth], [-15, 15]);
-    const offsetY = useTransform(mouseY, [0, window.innerHeight], [-15, 15]);
+    const [offsetX, setOffsetX] = useState(mouseX);
+    const [offsetY, setOffsetY] = useState(mouseY);
+
+
+    // إنشاء transforms بعد التأكد من window
+    const ox = useTransform(mouseX, [0, window.innerWidth], [-20, 20]);
+    const oy = useTransform(mouseY, [0, window.innerHeight], [-20, 20]);
 
     useEffect(() => {
-        setParticles(generateParticles(60));
+        setParticles(generateParticles(80));
+
+        if (typeof window === "undefined") return;
+
         const handleMouse = (e: MouseEvent) => {
             mouseX.set(e.clientX);
             mouseY.set(e.clientY);
         };
+
         window.addEventListener("mousemove", handleMouse);
+
+        
+        setOffsetX(ox);
+        setOffsetY(oy);
+
         return () => window.removeEventListener("mousemove", handleMouse);
     }, [mouseX, mouseY]);
 
+
     return (
         <div className="relative w-full min-h-screen bg-black overflow-hidden">
-            {/* Neon Particles */}
+            {/* PARTICLES */}
             {particles.map((p, i) => (
                 <motion.span
                     key={i}
@@ -74,74 +113,63 @@ export default function NeonFullPagePulse() {
                         height: p.size,
                     }}
                     animate={{ y: ["0%", "10%", "0%"], opacity: [0.2, 1, 0.2] }}
-                    transition={{ repeat: Infinity, duration: 4, delay: p.delay, ease: "easeInOut" }}
+                    transition={{ repeat: Infinity, duration: 4, delay: p.delay }}
                 />
             ))}
 
-            {/* Light Gradient Glow */}
+            {/* BACKGROUND GLOW */}
             <motion.div
                 className="absolute inset-0 w-full h-full pointer-events-none"
                 animate={{ opacity: [0.6, 0.9, 0.6] }}
-                transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+                transition={{ repeat: Infinity, duration: 6 }}
             >
                 <div className="w-full h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 opacity-20 blur-2xl" />
             </motion.div>
 
-            {/* Sections */}
+            {/* MAIN CONTENT */}
             <div className="relative z-10 max-w-full">
                 {phases.map((phase, i) => {
-                    const [ref, inView] = useInView({ threshold: 0.25, triggerOnce: false, rootMargin: "-100px 0px -100px 0px" });
+                    const { ref, inView } = useInView({
+                        threshold: 0.3,
+                        triggerOnce: false, // لا يخفي عند الرجوع
+                    });
 
                     return (
                         <section
                             key={i}
                             ref={ref}
-                            className="studio-section relative h-screen flex items-center justify-center text-white overflow-hidden"
-                            style={{ backgroundImage: `url(${phase.bg})`, backgroundSize: "cover", backgroundPosition: "center" }}
+                            className="relative h-screen flex items-center justify-center text-white overflow-hidden"
+                            style={{
+                                backgroundImage: `url(${phase.bg})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                            }}
                         >
-                            {/* Dark overlay */}
                             <div className="absolute inset-0 bg-black/60" />
 
-                            <div className="relative z-10 flex flex-col md:flex-row items-center justify-center max-w-6xl w-full px-4">
-                                {/* Text */}
+                            <div className="relative z-10 flex flex-col md:flex-row items-center justify-center max-w-6xl w-full px-6 gap-8">
+
+                                {/* TEXT */}
                                 <motion.div
-                                    className="md:w-1/2 text-center md:text-left"
-                                    initial={{ x: -200, opacity: 0 }}
-                                    animate={inView ? { x: 0, opacity: 1 } : { x: -200, opacity: 0 }}
-                                    transition={{ duration: 0.8, ease: "easeOut" }}
                                     style={{ x: offsetX, y: offsetY }}
+                                    initial="hidden"
+                                    animate={inView ? "visible" : "hidden"}
+                                    variants={slideInSmooth}
+                                    className="max-w-lg"
                                 >
-                                    <motion.h2
-                                        className="text-5xl font-bold mb-4 text-cyan-400"
-                                        animate={
-                                            inView
-                                                ? { scale: [1, 1.05, 1], textShadow: "0 0 40px #00eaff, 0 0 80px #00eaff" }
-                                                : { scale: 1, textShadow: "0 0 20px #00eaff" }
-                                        }
-                                        transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
-                                    >
-                                        {phase.title}
-                                    </motion.h2>
-                                    <motion.p
-                                        className="text-xl opacity-90"
-                                        initial={{ opacity: 0 }}
-                                        animate={inView ? { opacity: 1 } : { opacity: 0 }}
-                                        transition={{ duration: 0.8, delay: 0.1 }}
-                                    >
-                                        {phase.text}
-                                    </motion.p>
+                                    <h2 className="text-5xl font-bold mb-4 text-cyan-400">{phase.title}</h2>
+                                    <p className="text-xl opacity-90 leading-relaxed">{phase.text}</p>
                                 </motion.div>
 
-                                {/* Image Placeholder / Neon Glow Box */}
+                                {/* IMAGE BOX */}
                                 <motion.div
-                                    className="md:w-1/2 flex justify-center mt-10 md:mt-0"
-                                    initial={{ x: 200, opacity: 0 }}
-                                    animate={inView ? { x: 0, opacity: 1 } : { x: 200, opacity: 0 }}
-                                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                                    initial="hidden"
+                                    animate={inView ? "visible" : "hidden"}
+                                    variants={fadeInSmooth}
                                 >
-                                    {/* <div className="w-[280px] h-[280px] md:w-[340px] md:h-[340px] bg-neutral-900/30 backdrop-blur-lg rounded-2xl border border-white/10 flex items-center justify-center shadow-xl">
-                                        <span className="text-cyan-400 text-xl font-bold">IMAGE</span>
-                                    </div> */}
+                                    <div className="w-[300px] h-[300px] bg-neutral-900/40 border border-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-[0_0_30px_#0ff]">
+                                        <Image src="/logo.png" width={260} height={260} alt="Logo" />
+                                    </div>
                                 </motion.div>
                             </div>
                         </section>

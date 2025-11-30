@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+
 
 const devs = [
     "osama Al-Shoubi",
@@ -33,8 +33,16 @@ const roles = [
 ];
 
 export default function DevelopersShowcase() {
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            gsap.registerPlugin(ScrollTrigger);
+        }
+    }, []);
+    
     const rootRef = useRef<HTMLDivElement>(null);
     const progressRef = useRef<HTMLDivElement>(null);
+
 
     // ---------------- Scroll Progress ----------------
     useEffect(() => {

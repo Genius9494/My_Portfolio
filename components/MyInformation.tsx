@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import {
     FaGithub,
@@ -12,6 +12,9 @@ import {
 } from "react-icons/fa";
 
 export default function MyInformation() {
+
+    const [windowSize, setWindowSize] = useState({ w: 1200, h: 800 }); // افتراضي
+
     const [hovered, setHovered] = useState<string | null>(null);
 
     const socials = [
@@ -31,6 +34,20 @@ export default function MyInformation() {
 
     const offsetX = useTransform(mouseX, [0, window.innerWidth], [-15, 15]);
     const offsetY = useTransform(mouseY, [0, window.innerHeight], [-15, 15]);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        setWindowSize({ w: window.innerWidth, h: window.innerHeight });
+
+        const handleMouse = (e: MouseEvent) => {
+            mouseX.set(e.clientX);
+            mouseY.set(e.clientY);
+        };
+
+        window.addEventListener("mousemove", handleMouse);
+        return () => window.removeEventListener("mousemove", handleMouse);
+    }, [mouseX, mouseY]);
     return (
         <main className="bg-black">
             <section className="py-24 px-6 md:px-20 text-white relative">

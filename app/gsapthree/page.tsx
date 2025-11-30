@@ -3,20 +3,23 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
 import SuperInteractiveCopySection from "../../components/SuperInterActiveCopySection";
 import SDLCSections from "@/components/SDLCSections";
 import Timeline3D from "@/components/TimeLine";
 import SplitSections from "@/components/SplitSections";
 
-gsap.registerPlugin(ScrollTrigger);
+
 
 export default function CyberNeonPage() {
     const gridRef = useRef<HTMLCanvasElement | null>(null);
     const cursorRef = useRef<HTMLDivElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
-
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            gsap.registerPlugin(ScrollTrigger);
+        }
+    }, []);
 
 
     /* ---------------------- Cursor Sparks ---------------------- */

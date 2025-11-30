@@ -3,9 +3,14 @@ import { useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
 
 export default function useGsap(callback: () => void, deps: any[] = []) {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+  }, []);
+  
   useEffect(() => {
     const ctx = gsap.context(() => callback())
     return () => ctx.revert()
