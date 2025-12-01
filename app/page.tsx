@@ -1,25 +1,37 @@
 "use client";
 
-import Hero from "./hero/page";
-import Footer from "./footer/page";
-import CyberNeonPage from "./gsapthree/page";
+import PortfolioEnhancedPage from "@/components/Hero";
+import HeroSection from "../components/HeroSection";
+
 import MyInformation from "../components/MyInformation";
-import DevelopersShowcase from "./gsaptwo/page";
-import HeroSection from "@/components/HeroSection";
-import dynamic from "next/dynamic";
+import CyberNeonPage from "@/components/CyberNeon";
+import DevelopersShowcase from "../components/Developers";
+import Footer from "@/components/Footer";
+import HeroCarousel from "@/components/ProjectsInteractiveFull";
 
-
-
-
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="w-full flex flex-col items-center justify-center bg-black">
-      <HeroSection  />
-      <Hero />
+    <div className="w-full min-h-screen text-white bg-black">
+      {/* Hero Section */}
+      <HeroSection />
+
+      <div className="z-50 ">
+        <HeroCarousel />
+      </div>
+      {/* Portfolio Enhanced Page */}
+      <PortfolioEnhancedPage />
+
+      {/* Cyber Neon / GSAP 3D Section */}
       <CyberNeonPage />
+
+      {/* Developers Showcase */}
       <DevelopersShowcase />
+
+      {/* Personal / Info Section */}
       <MyInformation />
+
+      {/* Footer */}
       <Footer />
-    </main>
+    </div>
   );
 }

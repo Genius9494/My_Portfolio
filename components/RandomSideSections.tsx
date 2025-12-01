@@ -1,18 +1,24 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 
 export default function RandomSideSections() {
 
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     useEffect(() => {
         if (typeof window !== "undefined") {
             gsap.registerPlugin(ScrollTrigger);
         }
-    }, []); 
-    
+    }, []);
+
     const rootRef = useRef<HTMLDivElement>(null);
 
     const sections = [
@@ -56,6 +62,8 @@ export default function RandomSideSections() {
 
     // ---------------- Neon Background ----------------
     useEffect(() => {
+        if (!mounted) return;
+
         const container = rootRef.current;
         if (!container) return;
 
@@ -95,6 +103,9 @@ export default function RandomSideSections() {
             const title = section.querySelector("h3") as HTMLElement | null;
             const subtitle = section.querySelector("p") as HTMLElement | null;
 
+
+
+
             // Entrance animation
             gsap.fromTo(
                 section,
@@ -107,9 +118,12 @@ export default function RandomSideSections() {
                     ease: "power3.out",
                     scrollTrigger: {
                         trigger: section,
-                        start: "top 85%",
-                        toggleActions: "play reverse play reverse",
+                        start: "top 70%",     // يبدأ بعد دخول جزء أكبر (حل الاختفاء المبكر)
+                        end: "bottom 65%",    // يمنع اختفاء النص قبل الخروج الحقيقي
+                        toggleActions: "play none none reverse",
+                        scrub: false,         // يمنع اختفاء تدريجي أثناء التمرير
                     },
+
                 }
             );
 
@@ -173,7 +187,7 @@ export default function RandomSideSections() {
     return (
         <div
             ref={rootRef}
-            className="relative w-full py-32 bg-black text-white overflow-hidden"
+            className="relative w-full py-32 !z-10 bg-black text-white overflow-hidden"
         >
             {sections.map((s, i) => (
                 <div

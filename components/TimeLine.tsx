@@ -49,7 +49,7 @@ const Timeline3D = () => {
     }, [mouseX, mouseY]);
 
     return (
-        <section className="relative py-32 px-6 md:px-20 text-white overflow-hidden bg-black">
+        <section className="relative py-32 px-6 md:px-20 text-white overflow-visible bg-black">
             {/* Floating Particles */}
             {particles.map((p, i) => (
                 <motion.span
@@ -82,9 +82,9 @@ const Timeline3D = () => {
                     <motion.div
                         key={i}
                         className="relative pl-14 mb-20 cursor-pointer"
-                        initial={{ opacity: 0, x: -50, z: 0 }}
-                        whileInView={{ opacity: 1, x: 0, z: 10 }}
-                        viewport={{ once: true }}
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: false, amount: 0.1 }}
                         transition={{ duration: 0.8, delay: i * 0.2, ease: "easeOut" }}
                         onHoverStart={() => setHoveredIndex(i)}
                         onHoverEnd={() => setHoveredIndex(null)}
@@ -114,7 +114,7 @@ const Timeline3D = () => {
                             className="text-gray-300 text-lg mt-2 leading-relaxed"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
+                            viewport={{ once: false, amount: 0.1 }}
                             transition={{ duration: 0.6, delay: i * 0.2 }}
                         >
                             {step.text}

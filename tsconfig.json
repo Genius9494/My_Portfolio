@@ -39,7 +39,8 @@
     "next.config.js",
     "postcss.config.js",
     "app/test",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "global.d.ts", 
   ],
   "exclude": [
     "node_modules"
