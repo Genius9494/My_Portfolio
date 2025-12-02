@@ -1,7 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
-
 import PortfolioEnhancedPage from "@/components/Hero";
 import HeroSection from "../components/HeroSection";
 
@@ -9,6 +7,7 @@ import MyInformation from "../components/MyInformation";
 import CyberNeonPage from "@/components/CyberNeon";
 import Footer from "@/components/Footer";
 import HeroCarousel from "@/components/ProjectsInteractiveFull";
+
 
 // const PortfolioEnhancedPage = dynamic(() => import("@/components/Hero"), { ssr: false });
 // const HeroSection = dynamic(() => import("@/components/HeroSection"), { ssr: false });

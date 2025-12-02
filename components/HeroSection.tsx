@@ -113,7 +113,7 @@ export default function HeroSection() {
                     >
                         <motion.h1
                             style={{ rotateX, rotateY, scale, transformPerspective: 800, transformStyle: "preserve-3d" }}
-                            className="text-3xl md:text-6xl font-extrabold leading-tight tracking-tight text-white hover:cursor-pointer transition-transform duration-300"
+                            className="text-3xl md:text-6xl z-50 mt-10 font-extrabold leading-tight tracking-tight text-white hover:cursor-pointer transition-transform duration-300"
                         >
                             {"Hello from there, we are not a company".split("").map((l, i) => (
                                 <motion.span

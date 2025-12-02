@@ -3,37 +3,39 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
 
-
-export default function IntroLoader({ text = "E-commerce Platform" }: { text?: string }): JSX.Element | null {
-    const [visible, setVisible] = useState(true);
+export default function IntroLoader({ text = "E-commerce Platform" }: { text?: string }) {
+    const [visible, setVisible] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const charRef = useRef<HTMLImageElement | null>(null);
     const swordRef = useRef<HTMLImageElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
+    
+    useEffect(() => {
+        const lastShown = localStorage.getItem("introLastShown");
 
+        const now = Date.now();
+        const oneHour = 60 * 60 * 1000;
 
+        if (!lastShown) {
+            // أول زيارة
+            setVisible(true);
+            localStorage.setItem("introLastShown", String(now));
+            return;
+        }
 
-    // ---------------------------------------------
-    // localStorage
-    // ---------------------------------------------
-    // useEffect(() => {
-    //     const alreadyPlayed = localStorage.getItem("introPlayed");
+        const last = Number(lastShown);
+        if (now - last >= oneHour) {
+            // مرّت ساعة → اعرضه مرة أخرى
+            setVisible(true);
+            localStorage.setItem("introLastShown", String(now));
+        } else {
+            
+            setVisible(false);
+        }
+    }, []);
 
-    //     if (alreadyPlayed === "true") {
-    //         setVisible(false); // لا تظهر الانترو
-    //         return;
-    //     }
-
-    //     // أول زيارة → شغل الانترو
-    //     setVisible(true);
-    //     localStorage.setItem("introPlayed", "true");
-    // }, []);
-
-
-
-
-    // unlock audio once with first user interaction
+    
     useEffect(() => {
         const unlockSound = () => {
             if (audioRef.current) {
@@ -50,47 +52,32 @@ export default function IntroLoader({ text = "E-commerce Platform" }: { text?: s
         };
     }, []);
 
-
-
     useEffect(() => {
-        // initialize audio (path from your upload)
-
-        setVisible(true);
-        // إذا الانترو سبق وتشغّل → لا تشغّل الصوت ولا الأنميشن
-        // const alreadyPlayed = localStorage.getItem("introPlayed");
-        // if (alreadyPlayed === "true") return;
-
+        if (!visible) return ; 
 
         audioRef.current = new Audio("/entry.mp3");
         audioRef.current.volume = 0.6;
-
         audioRef.current.play().catch(() => { });
-
-
-        if (audioRef.current) audioRef.current.volume = 0.6;
 
         const container = containerRef.current;
         const char = charRef.current;
         const sword = swordRef.current;
         if (!container || !char || !sword) return;
 
-        // timeline: background subtle anim, character pop, sword slide -> impact -> exit
         const tl = gsap.timeline({
             onComplete: () => {
-                // hide the intro after a short delay to show the impact
-                gsap.to(container, { opacity: 0, scale: 1.08, duration: 0.9, ease: "power2.inOut", onComplete: () => setVisible(false) });
+                gsap.to(container, {
+                    opacity: 0,
+                    scale: 1.08,
+                    duration: 0.9,
+                    ease: "power2.inOut",
+                    onComplete: () => setVisible(false),
+                });
             },
         });
 
-        // fade/float background and subtle zoom
-        tl.fromTo(
-            container,
-            { autoAlpha: 0, scale: 1.06 },
-            { autoAlpha: 1, scale: 1, duration: 0.2, ease: "power2.out" },
-            0
-        );
+        tl.fromTo(container, { autoAlpha: 0, scale: 1.06 }, { autoAlpha: 1, scale: 1, duration: 0.2 });
 
-        // character pop in with tiny bounce
         tl.fromTo(
             char,
             { y: 60, scale: 0.6, autoAlpha: 0, rotation: -4 },
@@ -98,15 +85,8 @@ export default function IntroLoader({ text = "E-commerce Platform" }: { text?: s
             0.25
         );
 
-        // subtle pulse light behind character (we toggle a CSS class to show glow)
-        tl.to(
-            char,
-            { boxShadow: "5px 10px 104px 68px rgba(0,0,0,1)", duration: 0.6, ease: "power1.out" },
-            0.6
-        );
+        tl.to(char, { boxShadow: "5px 10px 104px 68px rgba(0,0,0,1)", duration: 0.6 }, 0.6);
 
-        // sword enters from left (or right) — slide and rotate
-        // start slightly after char appears
         tl.fromTo(
             sword,
             { x: -380, y: -40, rotation: -25, autoAlpha: 0, scale: 0.9 },
@@ -119,50 +99,29 @@ export default function IntroLoader({ text = "E-commerce Platform" }: { text?: s
                 duration: 0.72,
                 ease: "power3.out",
                 onComplete: () => {
-                    // impact moment: play sound and flash
-                    audioRef.current?.currentTime && (audioRef.current.currentTime = 0);
                     audioRef.current?.play();
-
-                    // small hit flash on character
-                    gsap.fromTo(char, { filter: "brightness(1)" }, { filter: "brightness(1.6)", duration: 0.08, yoyo: true, repeat: 3, ease: "sine.inOut" });
-
-                    // sword spark / glow pulse
-                    gsap.fromTo(sword, { boxShadow: "" }, { boxShadow: "", duration: 0.25, yoyo: true, repeat: 2 });
+                    gsap.fromTo(char, { filter: "brightness(1)" }, { filter: "brightness(1.6)", duration: 0.08, yoyo: true, repeat: 3 });
                 },
             },
             0.9
         );
 
-        // small reaction: char recoils slightly then recenter
-        tl.to(char, { x: -8, duration: 0.08, ease: "power2.out" }, ">");
+        tl.to(char, { x: -8, duration: 0.08 }, ">");
         tl.to(char, { x: 0, duration: 0.24, ease: "elastic.out(1,0.6)" });
 
-        // leave sword in place for a moment then retract slightly
-        tl.to(sword, { x: 80, rotation: 8, duration: 0.6, ease: "power2.inOut" }, "+=0.18");
+        tl.to(sword, { x: 80, rotation: 8, duration: 0.6 }, "+=0.18");
 
-        // camera/scene flash and then exit (onComplete hides)
         tl.to(container, { backgroundColor: "rgba(255,255,255,0.02)", duration: 0.18 }, "+=0.18");
 
-        // safety: if user clicks skip, will still hide after timeline
-        return () => {
-            tl.kill();
-        };
-    }, []);
+        return () => {tl.kill()};
+    }, [visible]);
 
-    // allow user to skip the intro by clicking
-    // const skip = () => {
-    //     // immediately hide
-    //     setVisible(false);
-    // };
-
-    if (!visible) return <></>;
+    if (!visible) return null;
 
     return (
         <div
             ref={containerRef}
-            // onClick={skip}
             className="fixed w-full inset-0 z-[9999] flex items-center justify-center bg-black text-white"
-            style={{ WebkitTapHighlightColor: "transparent" }}
         >
             
             {/* moving background layers (subtle parallax via CSS variables updated by gsap if needed) */}
