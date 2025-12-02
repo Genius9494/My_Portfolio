@@ -7,7 +7,6 @@ import HeroSection from "../components/HeroSection";
 
 import MyInformation from "../components/MyInformation";
 import CyberNeonPage from "@/components/CyberNeon";
-import DevelopersShowcase from "../components/Developers";
 import Footer from "@/components/Footer";
 import HeroCarousel from "@/components/ProjectsInteractiveFull";
 
@@ -34,8 +33,7 @@ export default function HomePage() {
         {/* Cyber Neon / GSAP 3D Section */}
         <CyberNeonPage />
       
-        {/* Developers Showcase */}
-        <DevelopersShowcase />
+        
         {/* Personal / Info Section */}
         <MyInformation />
 

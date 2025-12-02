@@ -7,6 +7,7 @@ const items = [
   { label: "Projects", href: "/projects" },
   { label: "Contact", href: "/projectRequestSection" },
   { label: "About", href: "/about" },
+  { label: "Developers", href: "/developers" },
 ];
 
 export default function Navbar() {
