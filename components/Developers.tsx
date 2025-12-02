@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const devs = [
     "osama Al-Shoubi",
-    "Hashim Wannous",
+    "Hashem Wannous",
     "Muwafaq maradni",
     "Alaa Tarabishe",
     "Mouhammed Anas Sroujy",

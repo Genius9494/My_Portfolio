@@ -1,22 +1,23 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SuperInteractiveCopySection from "./SuperInterActiveCopySection";
 import SDLCSections from "@/components/SDLCSections";
 import Timeline3D from "@/components/TimeLine";
-import dynamic from "next/dynamic";
 import SplitSections from "@/components/SplitSections";
-// const SplitSections = dynamic(() => import("@/components/SplitSections"), { ssr: false });
-// const Timeline3D = dynamic(() => import("@/components/TimeLine"), { ssr: false });
-// const SDLCSections = dynamic(() => import("@/components/SDLCSections"), { ssr: false });
-// const SuperInteractiveCopySection = dynamic (() => import("@/components/SuperInterActiveCopySection"), { ssr: false });
+
 
 export default function CyberNeonPage() {
-    const gridRef = useRef<HTMLCanvasElement | null>(null);
     const cursorRef = useRef<HTMLDivElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
+
+
+    const [year, setYear] = useState<number | null>(null);
+    useEffect(() => {
+        setYear(new Date().getFullYear());
+    }, []);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -349,7 +350,7 @@ export default function CyberNeonPage() {
             </div>
 
             <footer className="py-20 text-center opacity-40 text-sm tracking-wide z-50">
-                © {new Date().getFullYear()} Cyber Grid — Demo
+                © {year} Cyber Grid — Demo
             </footer>
 
         </main>

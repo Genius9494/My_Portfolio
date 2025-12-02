@@ -10,6 +10,8 @@ const timelineSteps = [
     { title: "Achievement", text: "We reached an amazing outcome that speaks for itself." },
 ];
 
+
+
 const generateParticles = (count: number) =>
     Array.from({ length: count }).map(() => ({
         top: Math.random() * 100,
@@ -19,6 +21,13 @@ const generateParticles = (count: number) =>
     }));
 
 const Timeline3D = () => {
+
+    const [isClient, setIsClient] = useState(false);
+    // enable client rendering
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     const [particles, setParticles] = useState<{ top: number; left: number; size: number; delay: number }[]>([]);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [windowSize, setWindowSize] = useState({ w: 1200, h: 800 });

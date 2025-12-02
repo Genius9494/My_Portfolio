@@ -30,7 +30,16 @@ const generateParticles = (count: number) =>
         delay: Math.random() * 2,
     }));
 
-export default function NeonFullSection() {
+    
+    
+    export default function NeonFullSection() {
+        
+        const [isClient, setIsClient] = useState(false);
+    // enable client rendering
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     const [particles, setParticles] = useState<{ top: number; left: number; size: number; delay: number }[]>([]);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 

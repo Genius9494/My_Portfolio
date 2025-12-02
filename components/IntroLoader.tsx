@@ -1,8 +1,10 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { motion } from "framer-motion";
 
-export default function IntroLoader(): JSX.Element | null {
+
+export default function IntroLoader({ text = "E-commerce Platform" }: { text?: string }): JSX.Element | null {
     const [visible, setVisible] = useState(true);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const charRef = useRef<HTMLImageElement | null>(null);
@@ -162,6 +164,7 @@ export default function IntroLoader(): JSX.Element | null {
             className="fixed w-full inset-0 z-[9999] flex items-center justify-center bg-black text-white"
             style={{ WebkitTapHighlightColor: "transparent" }}
         >
+            
             {/* moving background layers (subtle parallax via CSS variables updated by gsap if needed) */}
             <div
                 className="absolute inset-0 bg-cover bg-center"
@@ -191,6 +194,9 @@ export default function IntroLoader(): JSX.Element | null {
             {/* center scene container */}
             <div className="relative z-20 w-full max-w-3xl flex flex-col items-center gap-6 select-none px-6">
                 {/* character */}
+                
+
+
                 <img
                     ref={charRef}
                     src="/clash.png"
@@ -212,6 +218,36 @@ export default function IntroLoader(): JSX.Element | null {
                 <div className="mt-6 text-center">
                     <h2 className="text-xl md:text-2xl font-semibold tracking-wide">Welcome to chaoTechX   </h2>
                     <p className="text-sm text-white/70 mt-2"> Go ahead — downloading now  </p>
+                    {/* NEON PULSING TEXT ABOVE CHARACTER */}
+                    <motion.h2
+                        initial={{ opacity: 1, y: -30, scale: 1 }}
+                        animate={{
+                            scale: [1, 1.06, 1], // نبض خفيف مستمر
+                            textShadow: [
+                                "0 0 4px #00fff7, 0 0 10px #00fff7, 0 0 20px #00fff7",
+                                "0 0 6px #00fff7, 0 0 12px #00fff7, 0 0 24px #00fff7",
+                                "0 0 4px #00fff7, 0 0 10px #00fff7, 0 0 20px #00fff7",
+                            ],
+                        }}
+                        transition={{
+                            duration: 1.6,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                        className=" md:top-8 mt-12 text-3xl md:text-3xl font-extrabold text-cyan-400 z-50 flex flex-wrap justify-center gap-1 pointer-events-none"
+                    >
+                        {"E-commerce Platform".split("").map((char, i) => (
+                            <motion.span
+                                key={i}
+                                className="inline-block"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.04, duration: 0.8 }}
+                            >
+                                {char}
+                            </motion.span>
+                        ))}
+                    </motion.h2>
                 </div>
             </div>
 

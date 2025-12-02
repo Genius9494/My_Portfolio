@@ -23,23 +23,31 @@ export default function SuperInteractiveCopySection(): JSX.Element {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const offsetX = isClient
-        ? useTransform(mouseX, [0, window.innerWidth], [-15, 15])
-        : 0;
-    const offsetY = isClient
-        ? useTransform(mouseY, [0, window.innerHeight], [-15, 15])
-        : 0;
+    // نطاق ثابت أثناء SSR
+    const offsetX = useTransform(mouseX, [0, 1920], [-15, 15]); // قيمة افتراضية
+    const offsetY = useTransform(mouseY, [0, 1080], [-15, 15]); // قيمة افتراضية
 
-    // Mouse parallax effect
     useEffect(() => {
-        if (!isClient) return;
+        if (typeof window === "undefined") return;
+
+        // تحديث MotionValues عند معرفة حجم الشاشة
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Mouse move listener
         const handleMouse = (e: MouseEvent) => {
             mouseX.set(e.clientX);
             mouseY.set(e.clientY);
         };
+
         window.addEventListener("mousemove", handleMouse);
+
+        // إعادة تعيين نطاق useTransform باستخدام set
+        offsetX.set((mouseX.get() / width) * 30 - 15);
+        offsetY.set((mouseY.get() / height) * 30 - 15);
+
         return () => window.removeEventListener("mousemove", handleMouse);
-    }, [mouseX, mouseY, isClient]);
+    }, [mouseX, mouseY, offsetX, offsetY]);
 
     // GSAP Magnetic hover effect
     useEffect(() => {
@@ -228,7 +236,7 @@ export default function SuperInteractiveCopySection(): JSX.Element {
                 </div>
             </div>
 
-            <style jsx>{`
+            <style >{`
         .pulse-glow {
           box-shadow: 0 0 30px rgba(0, 255, 140, 0.12), inset 0 0 12px rgba(0,255,140,0.06);
           animation: pulse 2.6s infinite;

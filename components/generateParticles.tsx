@@ -56,24 +56,23 @@ export default function NeonFullSection() {
 
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
-    const ox =
-        typeof window !== "undefined"
-            ? useTransform(mouseX, [0, window.innerWidth], [-20, 20])
-            : 0;
-    const oy =
-        typeof window !== "undefined"
-            ? useTransform(mouseY, [0, window.innerHeight], [-20, 20])
-            : 0;
+
+    // استخدام نطاق افتراضي أثناء SSR (مثلاً 0-1920 و0-1080)
+    const ox = useTransform(mouseX, [0, 1920], [-20, 20]);
+    const oy = useTransform(mouseY, [0, 1080], [-20, 20]);
 
     useEffect(() => {
-        setParticles(generateParticles(80));
+        if (typeof window === "undefined") return;
+
         const handleMouse = (e: MouseEvent) => {
             mouseX.set(e.clientX);
             mouseY.set(e.clientY);
         };
+
         window.addEventListener("mousemove", handleMouse);
         return () => window.removeEventListener("mousemove", handleMouse);
-    }, []);
+    }, [mouseX, mouseY]);
+
 
     // Handle click on phase image
     const handlePhaseClick = (idx: number) => {
@@ -96,7 +95,7 @@ export default function NeonFullSection() {
                     setActivePhase(phases[idx].id);
                     setShowOverlay(true);
                     try {
-                        const audio = new Audio("/electro.mp3");
+                        const audio = new Audio("/click.mp3");
                         audio.play();
                     } catch { }
                 },

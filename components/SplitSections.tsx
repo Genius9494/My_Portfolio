@@ -33,11 +33,19 @@ const scenes = [
     },
 ];
 
+
 const SplitSections: React.FC = () => {
+    
+    const [isClient, setIsClient] = useState(false);
+    // enable client rendering
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     const containerRef = useRef<HTMLDivElement>(null);
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
-    const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+    const [windowSize, setWindowSize] = useState({ width: 1, height: 1 });
     const [activeScene, setActiveScene] = useState<number | null>(null);
     const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
