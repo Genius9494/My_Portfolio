@@ -26,7 +26,7 @@ export default function IntroLoader({ text = "E-commerce Platform" }: { text?: s
 
         const last = Number(lastShown);
         if (now - last >= oneHour) {
-            // مرّت ساعة → اعرضه مرة أخرى
+            // مرّت ساعة → اعرضه مرة أخرى   
             setVisible(true);
             localStorage.setItem("introLastShown", String(now));
         } else {
