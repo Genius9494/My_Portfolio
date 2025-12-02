@@ -9,11 +9,15 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
   const [showNav, setShowNav] = useState(true);
 
   useEffect(() => {
-    let lastScrollTop = window.scrollY;
+    // تفعيل scroll فوراً عند تحميل الصفحة
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    
+    let lastScrollTop = window.scrollY || 0;
     let ticking = false;
 
     const onScroll = () => {
-      const st = window.scrollY;
+      const st = window.scrollY || 0;
 
       if (!ticking) {
         window.requestAnimationFrame(() => {
@@ -27,9 +31,14 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
       }
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
+    // تأكد أن الـ listener يضاف بعد تحميل الصفحة بالكامل
+    setTimeout(() => {
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }, 50);
+
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
 
   return (
     <>

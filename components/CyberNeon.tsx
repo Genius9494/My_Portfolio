@@ -341,7 +341,7 @@ export default function CyberNeonPage() {
             </div>
 
 
-            <div>
+            <div >
                 <SplitSections />
             </div>
 

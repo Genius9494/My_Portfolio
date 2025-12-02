@@ -16,10 +16,10 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-black/90 h-12 px-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
+    <nav className="bg-black px-4 h-12 flex items-center justify-between w-full z-50 relative overflow-visible">
 
       {/* --- Desktop Nav (Hidden on mobile) --- */}
-      <div className="hidden md:block w-full overflow-hidden">
+      <div className="hidden md:block w-full">
         <GooeyNav
           items={items}
           particleCount={15}
@@ -42,7 +42,7 @@ export default function Navbar() {
 
       {/* --- Mobile Menu --- */}
       {open && (
-        <div className="absolute top-12 left-0 w-full bg-black/95 md:hidden flex flex-col items-start p-6 space-y-4">
+        <div className="absolute top-16 left-0 w-full bg-black/95 md:hidden flex flex-col items-start p-6 space-y-4">
           {items.map((item) => (
             <a
               key={item.href}

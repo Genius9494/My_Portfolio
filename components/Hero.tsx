@@ -7,14 +7,12 @@ import Lenis from "@studio-freight/lenis";
 import IndependentIconsMarquee from "./progressBar";
 import CurvedLoop from "@/components/CurvedLoop";
 import TextType from "@/components/TextType";
-// import FlyShowcase from "@/components/FlyShowCase";
 import NeonFullSection from "@/components/HolographicCard";
 import NeonFullPagePulse from "@/components/generateParticles";
 import RandomSideSections from "@/components/RandomSideSections";
 import dynamic from "next/dynamic";
 const HeroCarousel = dynamic(() => import("@/components/ProjectsInteractiveFull"), { ssr: false });
-// const NeonFullSection = dynamic(() => import("@/components/HolographicCard"), { ssr: false });
-// const NeonFullPagePulse = dynamic(() => import("@/components/generateParticles"), { ssr: false });
+
 const FlyShowcase = dynamic(() => import("@/components/FlyShowCase"), { ssr: false });
 
 export default function PortfolioEnhancedPage() {
@@ -22,13 +20,39 @@ export default function PortfolioEnhancedPage() {
     const cursorRef = useRef<HTMLDivElement | null>(null);
     // const logoSrc = "/logo.png";
 
-    /* ------------------------------ Smooth Scroll ------------------------------ */
+    /* ------------------------------ Smooth Scroll (Lenis + ScrollTrigger integration) ------------------------------ */
     useEffect(() => {
+        if (typeof window === "undefined") return;
+
         const lenis = new Lenis({
             lerp: 0.07,
             wheelMultiplier: 1,
             touchMultiplier: 0.6,
         });
+
+        // scrollerProxy for ScrollTrigger so it reads Lenis's scroll position
+        // use document.scrollingElement or document.documentElement depending on browser
+        ScrollTrigger.scrollerProxy(document.documentElement, {
+            scrollTop(value) {
+                if (arguments.length) {
+                    lenis.scrollTo(value as number);
+                    return;
+                }
+                // read current scroll
+                return document.documentElement.scrollTop || document.body.scrollTop;
+            },
+            getBoundingClientRect() {
+                return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+            },
+            // pinType: transform if page uses transform for pinning
+            pinType: document.documentElement.style.transform ? "transform" : "fixed",
+        });
+
+        // keep ScrollTrigger updated on Lenis scroll
+        const onLenisScroll = () => {
+            ScrollTrigger.update();
+        };
+        lenis.on("scroll", onLenisScroll);
 
         let rafId = 0;
         function raf(time: number) {
@@ -37,10 +61,20 @@ export default function PortfolioEnhancedPage() {
         }
         rafId = requestAnimationFrame(raf);
 
+        // initial refresh so ScrollTrigger measures correctly
+        ScrollTrigger.refresh();
+
         return () => {
-            if (rafId) cancelAnimationFrame(rafId);
+            // cleanup
+            cancelAnimationFrame(rafId);
+            lenis.off("scroll", onLenisScroll);
+            if ((lenis as any).destroy) (lenis as any).destroy(); // safe destroy
+            // remove scrollerProxy by resetting to default — ScrollTrigger API has no direct remove,
+            // but refreshing without proxy is fine:
+            ScrollTrigger.refresh();
         };
     }, []);
+
 
     /* --------------------------- Wavy Hero Motion --------------------------- */
     useEffect(() => {
@@ -259,8 +293,8 @@ export default function PortfolioEnhancedPage() {
                 trigger: section,
                 start: "top top",
                 end: "bottom top",
-                pin: true,
-                pinSpacing: false,
+                pin: false,
+                // pinSpacing: false,
                 pinType: "transform" // prevents modifying z-index
             });
 
@@ -396,7 +430,7 @@ export default function PortfolioEnhancedPage() {
     return (
         <main
             ref={containerRef}
-            className="  w-full text-white bg-neutral-950 px-6 md:px-16 lg:px-32 overflow-hidden"
+            className="  w-full text-white bg-neutral-950 px-6 md:px-16 lg:px-32 overflow-x-hidden"
         >
 
             <div className="w-full  flex flex-col items-center justify-center overflow-hidden">

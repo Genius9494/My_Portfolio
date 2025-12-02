@@ -118,6 +118,15 @@ export default function IntroLoader({ text = "E-commerce Platform" }: { text?: s
 
     if (!visible) return null;
 
+    // useEffect(() => {
+    //     if (visible) {
+    //         document.body.style.overflow = "hidden";
+    //     } else {
+    //         document.body.style.overflow = "";
+    //     }
+    // }, [visible]);
+
+
     return (
         <div
             ref={containerRef}
@@ -137,7 +146,7 @@ export default function IntroLoader({ text = "E-commerce Platform" }: { text?: s
             />
 
             {/* scanline / moving light */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none">
                 <div
                     className="absolute left-[-30%] top-1/3 w-[160%] h-[12%] rounded-full"
                     style={{
